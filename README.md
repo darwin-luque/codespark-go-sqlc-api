@@ -59,3 +59,11 @@ This project will be divided into multiple branches. Each branch will cover a sp
    ```bash
    air
    ```
+
+## Tools Used
+
+- [VSCode](https://code.visualstudio.com/)
+- [TablePlus](https://tableplus.com/)
+- [Warp](https://warp.dev/)
+
+In the `.vscode` folder, you will find 

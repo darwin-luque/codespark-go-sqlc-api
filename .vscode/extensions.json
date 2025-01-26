@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "golang.go",
+    "quillaja.goasm",
+    "premparihar.gotestexplorer",
+    "github.copilot",
+    "ms-azuretools.vscode-docker"
+  ]
+}
