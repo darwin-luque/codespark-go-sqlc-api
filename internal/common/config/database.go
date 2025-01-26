@@ -9,7 +9,7 @@ type DatabaseConfig struct {
 	port     string
 	user     string
 	password string
-	database string
+	name     string
 }
 
 func NewDatabaseConfig() (*DatabaseConfig, error) {
@@ -27,7 +27,7 @@ func NewDatabaseConfig() (*DatabaseConfig, error) {
 		return nil, err
 	}
 
-	database, err := getEnvVar("DB_DATABASE", "")
+	name, err := getEnvVar("DB_NAME", "")
 
 	if err != nil {
 		return nil, err
@@ -38,10 +38,10 @@ func NewDatabaseConfig() (*DatabaseConfig, error) {
 		port:     port,
 		user:     user,
 		password: password,
-		database: database,
+		name:     name,
 	}, nil
 }
 
 func (c *DatabaseConfig) DSN() string {
-	return "host=" + c.host + " port=" + c.port + " user=" + c.user + " password=" + c.password + " dbname=" + c.database + " sslmode=disable"
+	return "host=" + c.host + " port=" + c.port + " user=" + c.user + " password=" + c.password + " dbname=" + c.name + " sslmode=disable"
 }
