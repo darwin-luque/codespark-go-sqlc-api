@@ -13,12 +13,16 @@ type Config struct {
 	database DatabaseInterface
 }
 
-func New() Interface {
-	database := NewDatabaseConfig()
+func New() (Interface, error) {
+	database, err := NewDatabaseConfig()
+
+	if err != nil {
+		return nil, err
+	}
 
 	return &Config{
 		database: database,
-	}
+	}, nil
 }
 
 func (c *Config) Database() DatabaseInterface {

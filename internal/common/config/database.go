@@ -1,47 +1,47 @@
 package config
 
 type DatabaseInterface interface {
-	URL() string
+	DSN() string
 }
 
 type DatabaseConfig struct {
-	Host     string
-	Port     string
-	User     string
-	Password string
-	Database string
+	host     string
+	port     string
+	user     string
+	password string
+	database string
 }
 
-func NewDatabaseConfig() *DatabaseConfig {
+func NewDatabaseConfig() (*DatabaseConfig, error) {
 	host, _ := getEnvVar("DB_HOST", "localhost")
 	port, _ := getEnvVar("DB_PORT", "5432")
 	user, err := getEnvVar("DB_USER", "")
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	password, err := getEnvVar("DB_PASSWORD", "")
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	database, err := getEnvVar("DB_DATABASE", "")
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	return &DatabaseConfig{
-		Host:     host,
-		Port:     port,
-		User:     user,
-		Password: password,
-		Database: database,
-	}
+		host:     host,
+		port:     port,
+		user:     user,
+		password: password,
+		database: database,
+	}, nil
 }
 
-func (c *DatabaseConfig) URL() string {
-	return c.User + ":" + c.Password + "@tcp(" + c.Host + ":" + c.Port + ")/" + c.Database
+func (c *DatabaseConfig) DSN() string {
+	return "host=" + c.host + " port=" + c.port + " user=" + c.user + " password=" + c.password + " dbname=" + c.database + " sslmode=disable"
 }
