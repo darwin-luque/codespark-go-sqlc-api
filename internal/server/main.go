@@ -3,25 +3,30 @@ package server
 import (
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/darwin-luque/codespark-go-sqlc-api/domain"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/config"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/utils"
+	"github.com/darwin-luque/codespark-go-sqlc-api/internal/infrastructure/middlewares"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/server/modules/auth"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 type Server struct {
 	server *http.Server
 	router *mux.Router
-	cfg    config.ServerInterface
+	cfg    config.Interface
 	db     domain.DBTX
 	auth   *auth.AuthModule
+	m      *middlewares.Middlewares
 }
 
-func New(cfg config.ServerInterface, db domain.DBTX) (*Server, error) {
+func New(cfg config.Interface, db domain.DBTX) (*Server, error) {
+	m := middlewares.New(cfg, db)
 	s := Server{
 		server: &http.Server{
 			WriteTimeout: 5 * time.Second,
@@ -31,6 +36,7 @@ func New(cfg config.ServerInterface, db domain.DBTX) (*Server, error) {
 		cfg:    cfg,
 		router: mux.NewRouter().StrictSlash(true),
 		db:     db,
+		m:      m,
 	}
 
 	s.initModules()
@@ -42,11 +48,11 @@ func New(cfg config.ServerInterface, db domain.DBTX) (*Server, error) {
 }
 
 func (s *Server) initModules() {
-	s.auth = auth.New(s.db)
+	s.auth = auth.New(s.db, s.cfg)
 }
 
 func (s *Server) Run() error {
-	port := s.cfg.Port()
+	port := s.cfg.Server().Port()
 	if !strings.HasPrefix(port, ":") {
 		port = ":" + port
 	}
@@ -56,6 +62,9 @@ func (s *Server) Run() error {
 }
 
 func (s *Server) routes() {
+	s.router.Use(cors.AllowAll().Handler)
+	s.router.Use(s.m.Logger(os.Stdout))
+
 	apiRouter := s.router.PathPrefix("/api").Subrouter()
 	apiRouter.Handle("/health", healthCheck()).Methods(http.MethodGet)
 

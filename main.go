@@ -23,7 +23,7 @@ func main() {
 		panic(err)
 	}
 
-	server, err := server.New(cfg.Server(), conn)
+	server, err := server.New(cfg, conn)
 
 	if err != nil {
 		log.Fatalf("Error setting up server: %v", err)
