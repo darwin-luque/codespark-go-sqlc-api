@@ -1,0 +1,2 @@
+dbgen:
+	sqlc generate
