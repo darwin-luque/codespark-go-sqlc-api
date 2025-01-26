@@ -5,6 +5,7 @@ import (
 
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/config"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/setup"
+	"github.com/darwin-luque/codespark-go-sqlc-api/internal/server"
 )
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 		panic(err)
 	}
 
-	server, err := setup.NewServer(cfg.Server(), conn)
+	server, err := server.New(cfg.Server(), conn)
 
 	if err != nil {
 		log.Fatalf("Error setting up server: %v", err)
