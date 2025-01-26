@@ -21,4 +21,13 @@ func main() {
 		log.Fatalf("Error setting up database: %v", err)
 		panic(err)
 	}
+
+	server, err := setup.NewServer(cfg.Server(), conn)
+
+	if err != nil {
+		log.Fatalf("Error setting up server: %v", err)
+		panic(err)
+	}
+
+	log.Fatal(server.Run())
 }
