@@ -26,11 +26,18 @@ func New(db domain.DBTX, cfg config.Interface, m *middlewares.Middlewares) *Comm
 
 func (cm *CommentsModule) RegisterRoutes(baseRouter *mux.Router) {
 	articleBasedCommentsRouter := baseRouter.Path("/articles/{slug}/comments").Subrouter()
+	commentsRouter := baseRouter.Path("/comments").Subrouter()
 
 	authenticatedArticleBasedCommentsRouter := articleBasedCommentsRouter.PathPrefix("").Subrouter()
 	authenticatedArticleBasedCommentsRouter.Use(cm.m.Authenticate(utils.RequiredAuth))
 	{
 		authenticatedArticleBasedCommentsRouter.HandleFunc("", cm.add()).Methods(http.MethodPost)
 		authenticatedArticleBasedCommentsRouter.HandleFunc("", cm.listForArticle()).Methods(http.MethodGet)
+	}
+
+	authenticatedRouter := commentsRouter.PathPrefix("").Subrouter()
+	authenticatedRouter.Use(cm.m.Authenticate(utils.RequiredAuth))
+	{
+		authenticatedRouter.HandleFunc("/{id}", cm.delete()).Methods(http.MethodDelete)
 	}
 }

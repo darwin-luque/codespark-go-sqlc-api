@@ -39,6 +39,40 @@ func (q *Queries) AddComment(ctx context.Context, arg AddCommentParams) (Comment
 	return i, err
 }
 
+const deleteComment = `-- name: DeleteComment :exec
+DELETE FROM "comment"
+WHERE
+  "id" = $1::uuid
+`
+
+func (q *Queries) DeleteComment(ctx context.Context, dollar_1 uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteComment, dollar_1)
+	return err
+}
+
+const getComment = `-- name: GetComment :one
+SELECT
+  id, article_id, author_id, body, created_at, updated_at
+FROM
+  "comment"
+WHERE
+  "id" = $1::uuid
+`
+
+func (q *Queries) GetComment(ctx context.Context, commentID uuid.UUID) (Comment, error) {
+	row := q.db.QueryRow(ctx, getComment, commentID)
+	var i Comment
+	err := row.Scan(
+		&i.ID,
+		&i.ArticleID,
+		&i.AuthorID,
+		&i.Body,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const listCommentsForArticleBySlug = `-- name: ListCommentsForArticleBySlug :many
 SELECT
   "comment"."id",
