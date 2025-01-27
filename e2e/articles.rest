@@ -1,0 +1,40 @@
+
+@url=http://localhost:8080/api
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRhcndpbkBjb2RleGl0b3MuY29tIiwiaWQiOiJkYzM2Y2Q1My04NTExLTQ1NzItOWIzMS03MTA0NDczOGFiZWQifQ.Jsu7UAyGP4ppV0FcE9G8t-_IviSLnD5-geABjIZnWWQ
+
+### Create Article
+POST {{url}}/articles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "My first article",
+  "body": "# This is my first article\nThis is the body of my first article",
+  "description": "This is the description of my first article",
+  "slug": "my-first-article"
+}
+
+### List Article
+GET {{url}}/articles
+Authorization: Bearer {{token}}
+
+### Get Article By Slug
+GET {{url}}/articles/my-first-article
+Authorization: Bearer {{token}}
+
+### Update Article
+PUT {{url}}/articles/my-first-article
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "My first article (edited)"
+}
+
+### Publish Article
+PUT {{url}}/articles/my-first-article/publish
+Authorization: Bearer {{token}}
+
+### Delete Article
+DELETE {{url}}/articles/my-first-article
+Authorization: Bearer {{token}}
