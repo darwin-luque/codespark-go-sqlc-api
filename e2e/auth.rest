@@ -16,3 +16,7 @@ Content-Type: application/json
     "email": "darwin@codexitos.com",
     "password": "Password123!"
 }
+
+### Me
+GET http://localhost:8080/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRhcndpbkBjb2RleGl0b3MuY29tIiwiaWQiOiJkYzM2Y2Q1My04NTExLTQ1NzItOWIzMS03MTA0NDczOGFiZWQifQ.Jsu7UAyGP4ppV0FcE9G8t-_IviSLnD5-geABjIZnWWQ
