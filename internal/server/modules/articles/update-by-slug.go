@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func (am *ArticlesModule) updateArticleBySlug() http.HandlerFunc {
+func (am *ArticlesModule) updateBySlug() http.HandlerFunc {
 	type Input struct {
 		Title       *string `json:"title"`
 		Body        *string `json:"content"`

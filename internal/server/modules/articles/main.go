@@ -31,16 +31,16 @@ func (am *ArticlesModule) RegisterRoutes(baseRouter *mux.Router) {
 	authenticatedRouter := articlesRouter.PathPrefix("").Subrouter()
 	authenticatedRouter.Use(am.m.Authenticate(utils.RequiredAuth))
 	{
-		authenticatedRouter.HandleFunc("", am.createArticle()).Methods(http.MethodPost)
-		authenticatedRouter.HandleFunc("", am.listArticles()).Methods(http.MethodGet)
-		authenticatedRouter.HandleFunc("/{slug}", am.getArticleBySlug()).Methods(http.MethodGet)
+		authenticatedRouter.HandleFunc("", am.create()).Methods(http.MethodPost)
+		authenticatedRouter.HandleFunc("", am.list()).Methods(http.MethodGet)
+		authenticatedRouter.HandleFunc("/{slug}", am.getBySlug()).Methods(http.MethodGet)
 	}
 
 	blogOwnerRouter := authenticatedRouter.PathPrefix("").Subrouter()
 	blogOwnerRouter.Use(am.checkBlogOwnership("slug"))
 	{
-		blogOwnerRouter.HandleFunc("/{slug}", am.updateArticleBySlug()).Methods(http.MethodPut)
-		blogOwnerRouter.HandleFunc("/{slug}", am.deleteArticleBySlug()).Methods(http.MethodDelete)
+		blogOwnerRouter.HandleFunc("/{slug}", am.updateBySlug()).Methods(http.MethodPut)
+		blogOwnerRouter.HandleFunc("/{slug}", am.deleteBySlug()).Methods(http.MethodDelete)
 	}
 }
 

@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func (am *ArticlesModule) getArticleBySlug() http.HandlerFunc {
+func (am *ArticlesModule) deleteBySlug() http.HandlerFunc {
 	q := domain.New(am.db)
 
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
@@ -22,18 +22,11 @@ func (am *ArticlesModule) getArticleBySlug() http.HandlerFunc {
 			return
 		}
 
-		article, err := q.GetArticleBySlug(req.Context(), slug)
-
-		if err != nil {
-			switch {
-			case err.Error() == "no rows in result set":
-				utils.NotFoundError(w, utils.ErrorM{})
-			default:
-				utils.ServerError(w, err)
-			}
+		if err := q.DeleteArticle(req.Context(), slug); err != nil {
+			utils.ServerError(w, err)
 			return
 		}
 
-		utils.WriteJSON(w, http.StatusOK, utils.M{"article": article})
+		utils.WriteJSON(w, http.StatusOK, utils.M{})
 	})
 }

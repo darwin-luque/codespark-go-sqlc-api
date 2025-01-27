@@ -9,7 +9,7 @@ import (
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/infrastructure/middlewares"
 )
 
-func (am *ArticlesModule) createArticle() http.HandlerFunc {
+func (am *ArticlesModule) create() http.HandlerFunc {
 	type Input struct {
 		Title       string  `json:"title" validate:"required"`
 		Body        string  `json:"body" validate:"required"`

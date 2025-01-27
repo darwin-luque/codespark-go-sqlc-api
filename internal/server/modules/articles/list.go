@@ -8,7 +8,7 @@ import (
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/utils"
 )
 
-func (am *ArticlesModule) listArticles() http.HandlerFunc {
+func (am *ArticlesModule) list() http.HandlerFunc {
 	q := domain.New(am.db)
 
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
