@@ -97,6 +97,13 @@ This project will be divided into multiple branches. Each branch will cover a sp
 - POST /api/articles/:slug/favorite
 - DELETE /api/articles/:slug/favorite
 
+### Follows
+
+> **Note**: You can check how implement these endpoints in the `e2e/follows.rest` file.
+
+- POST /api/follows/:username
+- DELETE /api/follows/:username
+
 ## Tools Used
 
 - [VSCode](https://code.visualstudio.com/)
