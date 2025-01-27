@@ -50,3 +50,59 @@ func (q *Queries) CreateArticle(ctx context.Context, arg CreateArticleParams) (A
 	)
 	return i, err
 }
+
+const listArticles = `-- name: ListArticles :many
+SELECT
+  id, title, body, description, slug, author_id, status, created_at, updated_at
+FROM
+  "article"
+WHERE
+  "status" = 'published'
+  AND (
+    "title" ILIKE '%' || coalesce($1, '') || '%' OR
+    "slug" ILIKE '%' || coalesce($2, '') || '%'
+  )
+LIMIT coalesce($4::int, 10) OFFSET coalesce($3::int, 0)
+`
+
+type ListArticlesParams struct {
+	Title  *string `json:"title"`
+	Slug   *string `json:"slug"`
+	Offset *int32  `json:"offset"`
+	Limit  *int32  `json:"limit"`
+}
+
+func (q *Queries) ListArticles(ctx context.Context, arg ListArticlesParams) ([]Article, error) {
+	rows, err := q.db.Query(ctx, listArticles,
+		arg.Title,
+		arg.Slug,
+		arg.Offset,
+		arg.Limit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Article{}
+	for rows.Next() {
+		var i Article
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Body,
+			&i.Description,
+			&i.Slug,
+			&i.AuthorID,
+			&i.Status,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

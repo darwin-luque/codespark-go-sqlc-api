@@ -31,5 +31,6 @@ func (am *ArticlesModule) RegisterRoutes(baseRouter *mux.Router) {
 	authenticatedRouter.Use(am.m.Authenticate(utils.RequiredAuth))
 	{
 		authenticatedRouter.HandleFunc("", am.createArticle()).Methods(http.MethodPost)
+		authenticatedRouter.HandleFunc("", am.listArticles()).Methods(http.MethodGet)
 	}
 }
