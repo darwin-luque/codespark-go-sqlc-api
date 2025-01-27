@@ -1,4 +1,4 @@
-# CODE Spark - Realworld API with Golang and SQLC
+# CodeSpark - Realworld API with Golang and SQLC
 
 > **Notes**:
 >
