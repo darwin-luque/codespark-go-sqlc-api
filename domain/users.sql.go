@@ -7,15 +7,12 @@ package domain
 
 import (
 	"context"
-
-	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO "user" ("username", "email", "bio", "image", "password_hash")
 VALUES ($1, $2, $3, $4, $5)
-RETURNING "id", "username", "email", "bio", "image", "created_at", "updated_at"
+RETURNING id, username, email, bio, image, password_hash, created_at, updated_at
 `
 
 type CreateUserParams struct {
@@ -26,17 +23,7 @@ type CreateUserParams struct {
 	PasswordHash string  `json:"passwordHash"`
 }
 
-type CreateUserRow struct {
-	ID        uuid.UUID        `json:"id"`
-	Username  string           `json:"username"`
-	Email     string           `json:"email"`
-	Bio       *string          `json:"bio"`
-	Image     string           `json:"image"`
-	CreatedAt pgtype.Timestamp `json:"createdAt"`
-	UpdatedAt pgtype.Timestamp `json:"updatedAt"`
-}
-
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, createUser,
 		arg.Username,
 		arg.Email,
@@ -44,13 +31,14 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 		arg.Image,
 		arg.PasswordHash,
 	)
-	var i CreateUserRow
+	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
 		&i.Email,
 		&i.Bio,
 		&i.Image,
+		&i.PasswordHash,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
