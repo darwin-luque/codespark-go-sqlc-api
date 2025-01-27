@@ -62,7 +62,19 @@ func (am *AuthModule) signUp() http.HandlerFunc {
 			}
 		}
 
-		token, err := am.generateUserToken(&newUser)
+		parsedUser := SafeUser{
+			ID:             newUser.ID,
+			Username:       newUser.Username,
+			Email:          newUser.Email,
+			Bio:            newUser.Bio,
+			Image:          newUser.Image,
+			FollowersCount: 0,
+			FollowingCount: 0,
+			CreatedAt:      newUser.CreatedAt,
+			UpdatedAt:      newUser.UpdatedAt,
+		}
+
+		token, err := am.generateUserToken(parsedUser)
 
 		if err != nil {
 			utils.ErrorResponse(w, http.StatusInternalServerError, err)

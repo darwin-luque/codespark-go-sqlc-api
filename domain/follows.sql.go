@@ -13,7 +13,7 @@ import (
 
 const followUser = `-- name: FollowUser :one
 INSERT INTO "follow"("following_user_id", "followed_user_id")
-  VALUES ($1::uuid, $2::uuid)
+VALUES ($1::uuid, $2::uuid)
 RETURNING
   following_user_id, followed_user_id, created_at, updated_at
 `

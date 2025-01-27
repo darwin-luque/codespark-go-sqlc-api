@@ -10,7 +10,7 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-var anonymousUser = domain.User{}
+var anonymousUser = domain.GetUserByEmailRow{}
 
 func (m *Middlewares) Authenticate(mustAuth bool) func(http.Handler) http.Handler {
 	q := domain.New(m.db)

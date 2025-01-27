@@ -15,6 +15,7 @@ import (
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/server/modules/auth"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/server/modules/comments"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/server/modules/favorites"
+	"github.com/darwin-luque/codespark-go-sqlc-api/internal/server/modules/follows"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
@@ -29,6 +30,7 @@ type Server struct {
 	articles  *articles.ArticlesModule
 	comments  *comments.CommentsModule
 	favorites *favorites.FavoritesModule
+	follows   *follows.FollowsModule
 }
 
 func New(cfg config.Interface, db domain.DBTX) (*Server, error) {
@@ -58,6 +60,7 @@ func (s *Server) initModules() {
 	s.articles = articles.New(s.db, s.cfg, s.m)
 	s.comments = comments.New(s.db, s.cfg, s.m)
 	s.favorites = favorites.New(s.db, s.cfg, s.m)
+	s.follows = follows.New(s.db, s.cfg, s.m)
 }
 
 func (s *Server) Run() error {
@@ -81,6 +84,7 @@ func (s *Server) routes() {
 	s.articles.RegisterRoutes(apiRouter)
 	s.comments.RegisterRoutes(apiRouter)
 	s.favorites.RegisterRoutes(apiRouter)
+	s.follows.RegisterRoutes(apiRouter)
 }
 
 func healthCheck() http.Handler {

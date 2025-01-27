@@ -11,25 +11,23 @@ import (
 
 func (am *AuthModule) me() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		user, ok := req.Context().Value(middlewares.USER_KEY).(*domain.User)
+		user, ok := req.Context().Value(middlewares.USER_KEY).(*domain.GetUserByEmailRow)
 
 		if !ok {
 			utils.ErrorResponse(w, http.StatusInternalServerError, errors.New("invalid user context"))
 			return
 		}
 
-		bio := ""
-		if user.Bio != nil {
-			bio = *user.Bio
-		}
 		safeUser := SafeUser{
-			ID:        user.ID,
-			Email:     user.Email,
-			Username:  user.Username,
-			Image:     user.Image,
-			Bio:       bio,
-			CreatedAt: user.CreatedAt,
-			UpdatedAt: user.UpdatedAt,
+			ID:             user.ID,
+			Email:          user.Email,
+			Username:       user.Username,
+			Image:          user.Image,
+			Bio:            user.Bio,
+			FollowersCount: user.FollowersCount,
+			FollowingCount: user.FollowingCount,
+			CreatedAt:      user.CreatedAt,
+			UpdatedAt:      user.UpdatedAt,
 		}
 
 		utils.WriteJSON(w, http.StatusOK, utils.M{"user": safeUser})

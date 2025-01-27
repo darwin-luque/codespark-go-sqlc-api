@@ -1,0 +1,10 @@
+@url=http://localhost:8080/api
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imx1cXVlQGNvZGV4aXRvcy5jb20iLCJpZCI6ImFmOTVkYjg5LTEyMTEtNGRmOS1hMmM3LTY1ZmQzYTM0YWI4MiJ9.wZoCv3KxhevJnYVLybhxbuf2o4fdABNRA-amagRBFDI
+
+### Follow User
+POST {{url}}/follows/darwin
+Authorization: Bearer {{token}}
+
+### Unfollow User
+DELETE {{url}}/follows/darwin
+Authorization: Bearer {{token}}

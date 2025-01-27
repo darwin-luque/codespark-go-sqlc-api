@@ -14,7 +14,7 @@ const (
 	TOKEN_KEY contextKey = "token"
 )
 
-func setContextUser(r *http.Request, u *domain.User) *http.Request {
+func setContextUser(r *http.Request, u *domain.GetUserByEmailRow) *http.Request {
 	ctx := context.WithValue(r.Context(), USER_KEY, u)
 	return r.WithContext(ctx)
 }

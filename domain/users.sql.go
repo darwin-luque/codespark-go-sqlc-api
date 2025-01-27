@@ -7,12 +7,16 @@ package domain
 
 import (
 	"context"
+
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO "user" ("username", "email", "bio", "image", "password_hash")
-VALUES ($1, $2, $3, $4, $5)
-RETURNING id, username, email, bio, image, password_hash, created_at, updated_at
+INSERT INTO "user"("username", "email", "bio", "image", "password_hash")
+  VALUES ($1, $2, $3, $4, $5)
+RETURNING
+  id, username, email, bio, image, password_hash, created_at, updated_at
 `
 
 type CreateUserParams struct {
@@ -46,13 +50,43 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, username, email, bio, image, password_hash, created_at, updated_at FROM "user"
-WHERE "email" = $1 LIMIT 1
+SELECT
+  "user"."id",
+  "user"."username",
+  "user"."email",
+  "user"."bio",
+  "user"."image",
+  "user"."password_hash",
+  "user"."created_at",
+  "user"."updated_at",
+  COUNT(DISTINCT "followers"."following_user_id") AS "followers_count",
+  COUNT(DISTINCT "following"."followed_user_id") AS "following_count"
+FROM
+  "user"
+  LEFT JOIN "follow" AS "followers" ON "followers"."followed_user_id" = "user"."id"
+  LEFT JOIN "follow" AS "following" ON "following"."following_user_id" = "user"."id"
+WHERE
+  "email" = $1
+GROUP BY "user"."id"
+LIMIT 1
 `
 
-func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+type GetUserByEmailRow struct {
+	ID             uuid.UUID        `json:"id"`
+	Username       string           `json:"username"`
+	Email          string           `json:"email"`
+	Bio            *string          `json:"bio"`
+	Image          string           `json:"image"`
+	PasswordHash   string           `json:"passwordHash"`
+	CreatedAt      pgtype.Timestamp `json:"createdAt"`
+	UpdatedAt      pgtype.Timestamp `json:"updatedAt"`
+	FollowersCount int64            `json:"followersCount"`
+	FollowingCount int64            `json:"followingCount"`
+}
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
 	row := q.db.QueryRow(ctx, getUserByEmail, email)
-	var i User
+	var i GetUserByEmailRow
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
@@ -62,18 +96,50 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.PasswordHash,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.FollowersCount,
+		&i.FollowingCount,
 	)
 	return i, err
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, email, bio, image, password_hash, created_at, updated_at FROM "user"
-WHERE "username" = $1 LIMIT 1
+SELECT
+  "user"."id",
+  "user"."username",
+  "user"."email",
+  "user"."bio",
+  "user"."image",
+  "user"."password_hash",
+  "user"."created_at",
+  "user"."updated_at",
+  COUNT(DISTINCT "followers"."following_user_id") AS "followers_count",
+  COUNT(DISTINCT "following"."followed_user_id") AS "following_count"
+FROM
+  "user"
+  LEFT JOIN "follow" AS "followers" ON "followers"."followed_user_id" = "user"."id"
+  LEFT JOIN "follow" AS "following" ON "following"."following_user_id" = "user"."id"
+WHERE
+  "username" = $1
+GROUP BY "user"."id"
+LIMIT 1
 `
 
-func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
+type GetUserByUsernameRow struct {
+	ID             uuid.UUID        `json:"id"`
+	Username       string           `json:"username"`
+	Email          string           `json:"email"`
+	Bio            *string          `json:"bio"`
+	Image          string           `json:"image"`
+	PasswordHash   string           `json:"passwordHash"`
+	CreatedAt      pgtype.Timestamp `json:"createdAt"`
+	UpdatedAt      pgtype.Timestamp `json:"updatedAt"`
+	FollowersCount int64            `json:"followersCount"`
+	FollowingCount int64            `json:"followingCount"`
+}
+
+func (q *Queries) GetUserByUsername(ctx context.Context, username string) (GetUserByUsernameRow, error) {
 	row := q.db.QueryRow(ctx, getUserByUsername, username)
-	var i User
+	var i GetUserByUsernameRow
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
@@ -83,6 +149,8 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User,
 		&i.PasswordHash,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.FollowersCount,
+		&i.FollowingCount,
 	)
 	return i, err
 }
