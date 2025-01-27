@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}']
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=myuser
+      - DB_PASSWORD=mypassword
+      - DB_NAME=mydb
+      - SERVER_PORT=8080
+      - SERVER_HOST=localhost
+      - SERVER_MODE=production
+    ports:
+      - '8080:8080'
+    depends_on:
+      db:
+        condition: service_healthy
