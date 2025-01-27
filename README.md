@@ -70,6 +70,17 @@ This project will be divided into multiple branches. Each branch will cover a sp
 - POST /api/users/sign-in
 - GET /api/users/me
 
+### Articles
+
+> **Note**: You can check how implement these endpoints in the `e2e/articles.rest` file.
+
+- POST /api/articles
+- GET /api/articles
+- GET /api/articles/:slug
+- PUT /api/articles/:slug
+- DELETE /api/articles/:slug
+- POST /api/articles/:slug/publish
+
 ## Tools Used
 
 - [VSCode](https://code.visualstudio.com/)
