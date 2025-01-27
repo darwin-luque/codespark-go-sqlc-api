@@ -33,6 +33,7 @@ func (am *ArticlesModule) RegisterRoutes(baseRouter *mux.Router) {
 	{
 		authenticatedRouter.HandleFunc("", am.createArticle()).Methods(http.MethodPost)
 		authenticatedRouter.HandleFunc("", am.listArticles()).Methods(http.MethodGet)
+		authenticatedRouter.HandleFunc("/{slug}", am.getArticleBySlug()).Methods(http.MethodGet)
 	}
 
 	blogOwnerRouter := authenticatedRouter.PathPrefix("").Subrouter()
