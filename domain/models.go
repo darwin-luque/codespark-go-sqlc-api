@@ -16,7 +16,7 @@ type Article struct {
 	Body        string           `json:"body"`
 	Description *string          `json:"description"`
 	Slug        string           `json:"slug"`
-	AuthorID    pgtype.UUID      `json:"authorId"`
+	AuthorID    uuid.UUID        `json:"authorId"`
 	Status      *string          `json:"status"`
 	CreatedAt   pgtype.Timestamp `json:"createdAt"`
 	UpdatedAt   pgtype.Timestamp `json:"updatedAt"`

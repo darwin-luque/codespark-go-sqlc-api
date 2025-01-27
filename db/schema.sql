@@ -23,7 +23,7 @@ CREATE TABLE "article" (
   "body" text NOT NULL,
   "description" varchar,
   "slug" varchar UNIQUE NOT NULL,
-  "author_id" uuid,
+  "author_id" uuid NOT NULL,
   "status" varchar,
   "created_at" timestamp DEFAULT (now()),
   "updated_at" timestamp DEFAULT (now())
