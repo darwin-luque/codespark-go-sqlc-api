@@ -80,6 +80,7 @@ This project will be divided into multiple branches. Each branch will cover a sp
 - PUT /api/articles/:slug
 - DELETE /api/articles/:slug
 - POST /api/articles/:slug/publish
+- GET /api/articles/favorites
 
 ### Comments
 
@@ -88,6 +89,13 @@ This project will be divided into multiple branches. Each branch will cover a sp
 - POST /api/articles/:slug/comments
 - GET /api/articles/:slug/comments
 - DELETE /api/comments/:id
+
+### Favorites
+
+> **Note**: You can check how implement these endpoints in the `e2e/favorites.rest` file.
+
+- POST /api/articles/:slug/favorite
+- DELETE /api/articles/:slug/favorite
 
 ## Tools Used
 
