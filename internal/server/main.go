@@ -48,7 +48,7 @@ func New(cfg config.Interface, db domain.DBTX) (*Server, error) {
 }
 
 func (s *Server) initModules() {
-	s.auth = auth.New(s.db, s.cfg)
+	s.auth = auth.New(s.db, s.cfg, s.m)
 }
 
 func (s *Server) Run() error {

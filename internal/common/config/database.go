@@ -2,6 +2,7 @@ package config
 
 type DatabaseInterface interface {
 	DSN() string
+	URL() string
 }
 
 type DatabaseConfig struct {
@@ -44,4 +45,8 @@ func NewDatabaseConfig() (*DatabaseConfig, error) {
 
 func (c *DatabaseConfig) DSN() string {
 	return "host=" + c.host + " port=" + c.port + " user=" + c.user + " password=" + c.password + " dbname=" + c.name + " sslmode=disable"
+}
+
+func (c *DatabaseConfig) URL() string {
+	return "postgres://" + c.user + ":" + c.password + "@" + c.host + ":" + c.port + "/" + c.name + "?sslmode=disable"
 }

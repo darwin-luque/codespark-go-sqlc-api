@@ -7,6 +7,11 @@ import (
 	"net/http"
 )
 
+const (
+	OptionalAuth = false
+	RequiredAuth = true
+)
+
 type M map[string]interface{}
 
 func WriteJSON(w http.ResponseWriter, code int, data interface{}) {

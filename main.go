@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/config"
@@ -22,6 +23,7 @@ func main() {
 		log.Fatalf("Error setting up database: %v", err)
 		panic(err)
 	}
+	defer conn.Close(context.Background())
 
 	server, err := server.New(cfg, conn)
 

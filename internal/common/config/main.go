@@ -10,11 +10,13 @@ import (
 type Interface interface {
 	Database() DatabaseInterface
 	Server() ServerInterface
+	Auth() AuthInterface
 }
 
 type Config struct {
 	database DatabaseInterface
 	server   ServerInterface
+	auth     AuthInterface
 }
 
 func New() (Interface, error) {
@@ -30,11 +32,18 @@ func New() (Interface, error) {
 		return nil, err
 	}
 
+	auth, err := NewAuthConfig()
+
+	if err != nil {
+		return nil, err
+	}
+
 	server := NewServerConfig()
 
 	return &Config{
 		database: database,
 		server:   server,
+		auth:     auth,
 	}, nil
 }
 
@@ -44,6 +53,10 @@ func (c *Config) Database() DatabaseInterface {
 
 func (c *Config) Server() ServerInterface {
 	return c.server
+}
+
+func (c *Config) Auth() AuthInterface {
+	return c.auth
 }
 
 func getEnvVar(key string, fallback string) (string, error) {

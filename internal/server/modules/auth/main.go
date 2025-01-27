@@ -2,16 +2,26 @@ package auth
 
 import (
 	"github.com/darwin-luque/codespark-go-sqlc-api/domain"
+	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/config"
+	"github.com/darwin-luque/codespark-go-sqlc-api/internal/infrastructure/middlewares"
 	"github.com/gorilla/mux"
 )
 
 type AuthModule struct {
-	db domain.DBTX
+	db  domain.DBTX
+	cfg config.Interface
+	m   *middlewares.Middlewares
 }
 
-func New(db domain.DBTX) *AuthModule {
-	return &AuthModule{db}
+func New(db domain.DBTX, cfg config.Interface, m *middlewares.Middlewares) *AuthModule {
+	return &AuthModule{db, cfg, m}
 }
 
-func (m *AuthModule) RegisterRoutes(baseRouter *mux.Router) {
+func (am *AuthModule) RegisterRoutes(baseRouter *mux.Router) {
+	authRouter := baseRouter.PathPrefix("/auth").Subrouter()
+
+	noAuthRouter := authRouter.PathPrefix("").Subrouter()
+	{
+		noAuthRouter.HandleFunc("/sign-up", am.signUp()).Methods("POST")
+	}
 }

@@ -10,12 +10,11 @@ import (
 func SetupDatabase(cfg config.DatabaseInterface) (*pgx.Conn, error) {
 	ctx := context.Background()
 
-	conn, err := pgx.Connect(ctx, cfg.DSN())
+	conn, err := pgx.Connect(ctx, cfg.URL())
 
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close(ctx)
 
 	return conn, nil
 }

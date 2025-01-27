@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -15,6 +16,14 @@ type ErrorM map[string][]string
 func (e ErrorM) Error() string {
 	return "validation error"
 }
+
+var (
+	ErrDuplicateEmail    = errors.New("duplicate email")
+	ErrDuplicateUsername = errors.New("duplicate username")
+	ErrNotFound          = errors.New("record not found")
+	ErrUnAuthorized      = errors.New("unauthorized")
+	ErrInternal          = errors.New("internal error")
+)
 
 func ValidationError(w http.ResponseWriter, _err error) {
 	resp := ErrorM{}
