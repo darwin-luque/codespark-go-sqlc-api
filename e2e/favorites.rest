@@ -1,0 +1,11 @@
+@url=http://localhost:8080/api
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRhcndpbkBjb2RleGl0b3MuY29tIiwiaWQiOiJkYzM2Y2Q1My04NTExLTQ1NzItOWIzMS03MTA0NDczOGFiZWQifQ.Jsu7UAyGP4ppV0FcE9G8t-_IviSLnD5-geABjIZnWWQ
+@articleSlug=my-first-article
+
+### Add Article to favorites
+POST {{url}}/articles/{{articleSlug}}/favorites
+Authorization: Bearer {{token}}
+
+### Remove Article from favorites
+DELETE {{url}}/articles/{{articleSlug}}/favorites
+Authorization: Bearer {{token}}

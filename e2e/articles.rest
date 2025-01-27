@@ -8,10 +8,10 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "title": "My first article",
+  "title": "My second article",
   "body": "# This is my first article\nThis is the body of my first article",
   "description": "This is the description of my first article",
-  "slug": "my-first-article"
+  "slug": "my-second-article"
 }
 
 ### List Article
@@ -37,4 +37,8 @@ Authorization: Bearer {{token}}
 
 ### Delete Article
 DELETE {{url}}/articles/my-first-article
+Authorization: Bearer {{token}}
+
+### List Favorite Articles
+GET {{url}}/articles/favorites
 Authorization: Bearer {{token}}
