@@ -31,5 +31,6 @@ func (cm *CommentsModule) RegisterRoutes(baseRouter *mux.Router) {
 	authenticatedArticleBasedCommentsRouter.Use(cm.m.Authenticate(utils.RequiredAuth))
 	{
 		authenticatedArticleBasedCommentsRouter.HandleFunc("", cm.add()).Methods(http.MethodPost)
+		authenticatedArticleBasedCommentsRouter.HandleFunc("", cm.listForArticle()).Methods(http.MethodGet)
 	}
 }

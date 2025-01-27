@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const addComment = `-- name: AddComment :one
@@ -36,4 +37,55 @@ func (q *Queries) AddComment(ctx context.Context, arg AddCommentParams) (Comment
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const listCommentsForArticleBySlug = `-- name: ListCommentsForArticleBySlug :many
+SELECT
+  "comment"."id",
+  "comment"."body",
+  "comment"."created_at",
+  "comment"."updated_at",
+  "comment"."article_id",
+  "comment"."author_id"
+FROM
+  "comment"
+INNER JOIN "article" ON "comment"."article_id" = "article"."id"
+WHERE
+  "article"."slug" = $1
+`
+
+type ListCommentsForArticleBySlugRow struct {
+	ID        uuid.UUID        `json:"id"`
+	Body      string           `json:"body"`
+	CreatedAt pgtype.Timestamp `json:"createdAt"`
+	UpdatedAt pgtype.Timestamp `json:"updatedAt"`
+	ArticleID uuid.UUID        `json:"articleId"`
+	AuthorID  uuid.UUID        `json:"authorId"`
+}
+
+func (q *Queries) ListCommentsForArticleBySlug(ctx context.Context, slug string) ([]ListCommentsForArticleBySlugRow, error) {
+	rows, err := q.db.Query(ctx, listCommentsForArticleBySlug, slug)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListCommentsForArticleBySlugRow{}
+	for rows.Next() {
+		var i ListCommentsForArticleBySlugRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Body,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.ArticleID,
+			&i.AuthorID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
