@@ -23,7 +23,16 @@ UPDATE
 SET
   "title" = coalesce(sqlc.narg('title'), title),
   "body" = coalesce(sqlc.narg('body'), body),
-  "description" = coalesce(sqlc.narg('description'), description),
+  "description" = coalesce(sqlc.narg('description'), description)
+WHERE
+  "slug" = sqlc.arg('slug')
+RETURNING
+  *;
+
+-- name: PublishArticle :one
+UPDATE
+  "article"
+SET
   "status" = coalesce(sqlc.narg('status'), status)
 WHERE
   "slug" = sqlc.arg('slug')
