@@ -52,3 +52,13 @@ DELETE FROM
   "article"
 WHERE
   "slug" = $1;
+
+-- name: ListFavoriteArticles :many
+SELECT
+  *
+FROM
+  "article"
+INNER JOIN "favorite" ON "article"."id" = "favorite"."article_id"
+WHERE
+  "favorite"."user_id" = sqlc.arg('user_id')::uuid
+LIMIT coalesce(sqlc.narg('limit')::int, 10) OFFSET coalesce(sqlc.narg('offset')::int, 0);

@@ -34,6 +34,7 @@ func (am *ArticlesModule) RegisterRoutes(baseRouter *mux.Router) {
 		authenticatedRouter.HandleFunc("", am.create()).Methods(http.MethodPost)
 		authenticatedRouter.HandleFunc("", am.list()).Methods(http.MethodGet)
 		authenticatedRouter.HandleFunc("/{slug}", am.getBySlug()).Methods(http.MethodGet)
+		authenticatedRouter.HandleFunc("/{slug}/favorite", am.listFavorites()).Methods(http.MethodGet)
 	}
 
 	blogOwnerRouter := authenticatedRouter.PathPrefix("").Subrouter()

@@ -7,22 +7,20 @@ import (
 
 	"github.com/darwin-luque/codespark-go-sqlc-api/domain"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/utils"
+	"github.com/darwin-luque/codespark-go-sqlc-api/internal/infrastructure/middlewares"
 )
 
-func (am *ArticlesModule) list() http.HandlerFunc {
+func (am *ArticlesModule) listFavorites() http.HandlerFunc {
 	q := domain.New(am.db)
+
+	type ListFavoriteArticlesInput struct {
+		Limit  *int32
+		Offset *int32
+	}
 
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		query := req.URL.Query()
-		input := domain.ListArticlesParams{}
-
-		if v := query.Get("title"); v != "" {
-			input.Title = &v
-		}
-
-		if v := query.Get("slug"); v != "" {
-			input.Slug = &v
-		}
+		input := ListFavoriteArticlesInput{}
 
 		if v := query.Get("offset"); v != "" {
 			intV, err := strconv.ParseInt(v, 10, 32)
@@ -45,7 +43,20 @@ func (am *ArticlesModule) list() http.HandlerFunc {
 			input.Limit = &limit
 		}
 
-		articles, err := q.ListArticles(req.Context(), input)
+		user, ok := req.Context().Value(middlewares.USER_KEY).(*domain.User)
+
+		if !ok {
+			utils.ErrorResponse(w, http.StatusInternalServerError, errors.New("invalid user context"))
+			return
+		}
+
+		listFavoriteInput := domain.ListFavoriteArticlesParams{
+			UserID: user.ID,
+			Limit:  input.Limit,
+			Offset: input.Offset,
+		}
+
+		articles, err := q.ListFavoriteArticles(req.Context(), listFavoriteInput)
 
 		if err != nil {
 			utils.ServerError(w, err)

@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createArticle = `-- name: CreateArticle :one
@@ -134,6 +135,73 @@ func (q *Queries) ListArticles(ctx context.Context, arg ListArticlesParams) ([]A
 			&i.Status,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listFavoriteArticles = `-- name: ListFavoriteArticles :many
+SELECT
+  id, title, body, description, slug, author_id, status, article.created_at, article.updated_at, user_id, article_id, favorite.created_at, favorite.updated_at
+FROM
+  "article"
+INNER JOIN "favorite" ON "article"."id" = "favorite"."article_id"
+WHERE
+  "favorite"."user_id" = $1::uuid
+LIMIT coalesce($3::int, 10) OFFSET coalesce($2::int, 0)
+`
+
+type ListFavoriteArticlesParams struct {
+	UserID uuid.UUID `json:"userId"`
+	Offset *int32    `json:"offset"`
+	Limit  *int32    `json:"limit"`
+}
+
+type ListFavoriteArticlesRow struct {
+	ID          uuid.UUID        `json:"id"`
+	Title       string           `json:"title"`
+	Body        string           `json:"body"`
+	Description *string          `json:"description"`
+	Slug        string           `json:"slug"`
+	AuthorID    uuid.UUID        `json:"authorId"`
+	Status      *string          `json:"status"`
+	CreatedAt   pgtype.Timestamp `json:"createdAt"`
+	UpdatedAt   pgtype.Timestamp `json:"updatedAt"`
+	UserID      uuid.UUID        `json:"userId"`
+	ArticleID   uuid.UUID        `json:"articleId"`
+	CreatedAt_2 pgtype.Timestamp `json:"createdAt2"`
+	UpdatedAt_2 pgtype.Timestamp `json:"updatedAt2"`
+}
+
+func (q *Queries) ListFavoriteArticles(ctx context.Context, arg ListFavoriteArticlesParams) ([]ListFavoriteArticlesRow, error) {
+	rows, err := q.db.Query(ctx, listFavoriteArticles, arg.UserID, arg.Offset, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListFavoriteArticlesRow{}
+	for rows.Next() {
+		var i ListFavoriteArticlesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Body,
+			&i.Description,
+			&i.Slug,
+			&i.AuthorID,
+			&i.Status,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.UserID,
+			&i.ArticleID,
+			&i.CreatedAt_2,
+			&i.UpdatedAt_2,
 		); err != nil {
 			return nil, err
 		}
