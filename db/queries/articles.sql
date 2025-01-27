@@ -52,4 +52,3 @@ DELETE FROM
   "article"
 WHERE
   "slug" = $1;
-
