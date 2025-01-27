@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -33,4 +34,8 @@ func WriteJSON(w http.ResponseWriter, code int, data interface{}) {
 
 func ReadJSON(body io.Reader, input interface{}) error {
 	return json.NewDecoder(body).Decode(input)
+}
+
+func GenerateSlug(title string) string {
+	return strings.ToLower(strings.ReplaceAll(title, " ", "-"))
 }

@@ -11,18 +11,20 @@ import (
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/config"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/utils"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/infrastructure/middlewares"
+	"github.com/darwin-luque/codespark-go-sqlc-api/internal/server/modules/articles"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/server/modules/auth"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
 
 type Server struct {
-	server *http.Server
-	router *mux.Router
-	cfg    config.Interface
-	db     domain.DBTX
-	auth   *auth.AuthModule
-	m      *middlewares.Middlewares
+	server   *http.Server
+	router   *mux.Router
+	cfg      config.Interface
+	db       domain.DBTX
+	m        *middlewares.Middlewares
+	auth     *auth.AuthModule
+	articles *articles.ArticlesModule
 }
 
 func New(cfg config.Interface, db domain.DBTX) (*Server, error) {
@@ -49,6 +51,7 @@ func New(cfg config.Interface, db domain.DBTX) (*Server, error) {
 
 func (s *Server) initModules() {
 	s.auth = auth.New(s.db, s.cfg, s.m)
+	s.articles = articles.New(s.db, s.cfg, s.m)
 }
 
 func (s *Server) Run() error {
@@ -69,6 +72,7 @@ func (s *Server) routes() {
 	apiRouter.Handle("/health", healthCheck()).Methods(http.MethodGet)
 
 	s.auth.RegisterRoutes(apiRouter)
+	s.articles.RegisterRoutes(apiRouter)
 }
 
 func healthCheck() http.Handler {
