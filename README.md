@@ -81,6 +81,14 @@ This project will be divided into multiple branches. Each branch will cover a sp
 - DELETE /api/articles/:slug
 - POST /api/articles/:slug/publish
 
+### Comments
+
+> **Note**: You can check how implement these endpoints in the `e2e/comments.rest` file.
+
+- POST /api/articles/:slug/comments
+- GET /api/articles/:slug/comments
+- DELETE /api/comments/:id
+
 ## Tools Used
 
 - [VSCode](https://code.visualstudio.com/)
