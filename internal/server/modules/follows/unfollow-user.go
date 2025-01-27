@@ -52,6 +52,6 @@ func (fm *FollowsModule) unfollowUser() http.HandlerFunc {
 			return
 		}
 
-		utils.WriteJSON(w, http.StatusCreated, utils.M{})
+		utils.WriteJSON(w, http.StatusOK, utils.M{})
 	}
 }
