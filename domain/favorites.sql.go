@@ -33,3 +33,18 @@ func (q *Queries) AddArticleAsFavorite(ctx context.Context, arg AddArticleAsFavo
 	)
 	return i, err
 }
+
+const removeArticleAsFavorite = `-- name: RemoveArticleAsFavorite :exec
+DELETE FROM "favorite"
+WHERE "user_id" = $1 AND "article_id" = $2
+`
+
+type RemoveArticleAsFavoriteParams struct {
+	UserID    uuid.UUID `json:"userId"`
+	ArticleID uuid.UUID `json:"articleId"`
+}
+
+func (q *Queries) RemoveArticleAsFavorite(ctx context.Context, arg RemoveArticleAsFavoriteParams) error {
+	_, err := q.db.Exec(ctx, removeArticleAsFavorite, arg.UserID, arg.ArticleID)
+	return err
+}

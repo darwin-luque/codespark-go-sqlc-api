@@ -1,6 +1,8 @@
 package favorites
 
 import (
+	"net/http"
+
 	"github.com/darwin-luque/codespark-go-sqlc-api/domain"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/config"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/utils"
@@ -28,6 +30,7 @@ func (fm *FavoritesModule) RegisterRoutes(baseRouter *mux.Router) {
 
 	articleBasedFavoritesRouter := withAuth.PathPrefix("/articles/{slug}/favorites").Subrouter()
 	{
-		articleBasedFavoritesRouter.HandleFunc("", fm.addArticle()).Methods("POST")
+		articleBasedFavoritesRouter.HandleFunc("", fm.addArticle()).Methods(http.MethodPost)
+		articleBasedFavoritesRouter.HandleFunc("", fm.removeArticle()).Methods(http.MethodDelete)
 	}
 }
