@@ -60,10 +60,20 @@ This project will be divided into multiple branches. Each branch will cover a sp
    air
    ```
 
+## API Endpoints
+
+### Authentication
+
+> **Note**: You can check how implement these endpoints in the `e2e/auth.rest` file.
+
+- POST /api/users/sign-up
+- POST /api/users/sign-in
+- GET /api/users/me
+
 ## Tools Used
 
 - [VSCode](https://code.visualstudio.com/)
 - [TablePlus](https://tableplus.com/)
 - [Warp](https://warp.dev/)
 
-In the `.vscode` folder, you will find 
+In the `.vscode` folder, you will find the recommended extensions
