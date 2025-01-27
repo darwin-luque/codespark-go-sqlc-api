@@ -3,6 +3,8 @@ package auth
 import (
 	"github.com/darwin-luque/codespark-go-sqlc-api/domain"
 	"github.com/golang-jwt/jwt"
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 func (am *AuthModule) generateUserToken(user *domain.User) (string, error) {
@@ -17,4 +19,14 @@ func (am *AuthModule) generateUserToken(user *domain.User) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+type SafeUser struct {
+	ID        uuid.UUID
+	Username  string
+	Email     string
+	Bio       string
+	Image     string
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
 }

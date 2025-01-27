@@ -1,8 +1,11 @@
 package auth
 
 import (
+	"net/http"
+
 	"github.com/darwin-luque/codespark-go-sqlc-api/domain"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/config"
+	"github.com/darwin-luque/codespark-go-sqlc-api/internal/common/utils"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/infrastructure/middlewares"
 	"github.com/gorilla/mux"
 )
@@ -22,7 +25,13 @@ func (am *AuthModule) RegisterRoutes(baseRouter *mux.Router) {
 
 	noAuthRouter := authRouter.PathPrefix("").Subrouter()
 	{
-		noAuthRouter.HandleFunc("/sign-up", am.signUp()).Methods("POST")
-		noAuthRouter.HandleFunc("/sign-in", am.signIn()).Methods("POST")
+		noAuthRouter.HandleFunc("/sign-up", am.signUp()).Methods(http.MethodPost)
+		noAuthRouter.HandleFunc("/sign-in", am.signIn()).Methods(http.MethodPost)
+	}
+
+	optionalAuthRouter := authRouter.PathPrefix("").Subrouter()
+	optionalAuthRouter.Use(am.m.Authenticate(utils.OptionalAuth))
+	{
+		optionalAuthRouter.HandleFunc("/me", am.me()).Methods(http.MethodGet)
 	}
 }
