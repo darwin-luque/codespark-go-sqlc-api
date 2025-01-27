@@ -5,7 +5,7 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-func (am *AuthModule) generateUserToken(user *domain.CreateUserRow) (string, error) {
+func (am *AuthModule) generateUserToken(user *domain.User) (string, error) {
 	var hmacSampleSecret = []byte(am.cfg.Auth().Secret())
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{"id": user.ID, "email": user.Email})

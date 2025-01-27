@@ -69,6 +69,6 @@ func (am *AuthModule) signUp() http.HandlerFunc {
 			return
 		}
 
-		utils.WriteJSON(w, http.StatusCreated, utils.M{"user": newUser, "token": token})
+		utils.WriteJSON(w, http.StatusCreated, utils.M{"token": token})
 	})
 }

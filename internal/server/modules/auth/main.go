@@ -23,5 +23,6 @@ func (am *AuthModule) RegisterRoutes(baseRouter *mux.Router) {
 	noAuthRouter := authRouter.PathPrefix("").Subrouter()
 	{
 		noAuthRouter.HandleFunc("/sign-up", am.signUp()).Methods("POST")
+		noAuthRouter.HandleFunc("/sign-in", am.signIn()).Methods("POST")
 	}
 }
