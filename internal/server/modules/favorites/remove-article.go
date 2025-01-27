@@ -24,7 +24,7 @@ func (fm *FavoritesModule) removeArticle() http.HandlerFunc {
 			return
 		}
 
-		user, ok := req.Context().Value(middlewares.USER_KEY).(*domain.User)
+		user, ok := req.Context().Value(middlewares.USER_KEY).(*domain.GetUserByEmailRow)
 
 		if !ok {
 			utils.ErrorResponse(w, http.StatusInternalServerError, errors.New("invalid user context"))

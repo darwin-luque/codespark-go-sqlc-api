@@ -50,7 +50,7 @@ func (am *ArticlesModule) checkBlogOwnership(whereToCheck string) func(http.Hand
 	q := domain.New(am.db)
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			user, ok := req.Context().Value(middlewares.USER_KEY).(*domain.User)
+			user, ok := req.Context().Value(middlewares.USER_KEY).(*domain.GetUserByEmailRow)
 
 			if !ok {
 				utils.ErrorResponse(w, http.StatusInternalServerError, errors.New("invalid user context"))
