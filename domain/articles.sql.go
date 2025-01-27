@@ -51,6 +51,32 @@ func (q *Queries) CreateArticle(ctx context.Context, arg CreateArticleParams) (A
 	return i, err
 }
 
+const getArticleBySlug = `-- name: GetArticleBySlug :one
+SELECT
+  id, title, body, description, slug, author_id, status, created_at, updated_at
+FROM
+  "article"
+WHERE
+  "slug" = $1
+`
+
+func (q *Queries) GetArticleBySlug(ctx context.Context, slug string) (Article, error) {
+	row := q.db.QueryRow(ctx, getArticleBySlug, slug)
+	var i Article
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Body,
+		&i.Description,
+		&i.Slug,
+		&i.AuthorID,
+		&i.Status,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const listArticles = `-- name: ListArticles :many
 SELECT
   id, title, body, description, slug, author_id, status, created_at, updated_at
@@ -105,4 +131,49 @@ func (q *Queries) ListArticles(ctx context.Context, arg ListArticlesParams) ([]A
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateArticle = `-- name: UpdateArticle :one
+UPDATE
+  "article"
+SET
+  "title" = coalesce($1, title),
+  "body" = coalesce($2, body),
+  "description" = coalesce($3, description),
+  "status" = coalesce($4, status)
+WHERE
+  "slug" = $5
+RETURNING
+  id, title, body, description, slug, author_id, status, created_at, updated_at
+`
+
+type UpdateArticleParams struct {
+	Title       *string `json:"title"`
+	Body        *string `json:"body"`
+	Description *string `json:"description"`
+	Status      *string `json:"status"`
+	Slug        string  `json:"slug"`
+}
+
+func (q *Queries) UpdateArticle(ctx context.Context, arg UpdateArticleParams) (Article, error) {
+	row := q.db.QueryRow(ctx, updateArticle,
+		arg.Title,
+		arg.Body,
+		arg.Description,
+		arg.Status,
+		arg.Slug,
+	)
+	var i Article
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Body,
+		&i.Description,
+		&i.Slug,
+		&i.AuthorID,
+		&i.Status,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
