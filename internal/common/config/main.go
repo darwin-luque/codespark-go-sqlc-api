@@ -22,7 +22,9 @@ type Config struct {
 func New() (Interface, error) {
 	err := godotenv.Load()
 
-	if err != nil {
+	server := NewServerConfig()
+
+	if err != nil && server.Mode() == "debug" {
 		return nil, err
 	}
 
@@ -37,8 +39,6 @@ func New() (Interface, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	server := NewServerConfig()
 
 	return &Config{
 		database: database,
