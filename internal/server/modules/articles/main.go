@@ -40,6 +40,7 @@ func (am *ArticlesModule) RegisterRoutes(baseRouter *mux.Router) {
 	blogOwnerRouter.Use(am.checkBlogOwnership("slug"))
 	{
 		blogOwnerRouter.HandleFunc("/{slug}", am.updateBySlug()).Methods(http.MethodPut)
+		blogOwnerRouter.HandleFunc("/{slug}/publish", am.publish()).Methods(http.MethodPut)
 		blogOwnerRouter.HandleFunc("/{slug}", am.deleteBySlug()).Methods(http.MethodDelete)
 	}
 }

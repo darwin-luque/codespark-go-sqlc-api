@@ -9,13 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func (am *ArticlesModule) updateBySlug() http.HandlerFunc {
-	type Input struct {
-		Title       *string `json:"title"`
-		Body        *string `json:"content"`
-		Description *string `json:"description"`
-	}
-
+func (am *ArticlesModule) publish() http.HandlerFunc {
 	q := domain.New(am.db)
 
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
@@ -28,25 +22,13 @@ func (am *ArticlesModule) updateBySlug() http.HandlerFunc {
 			return
 		}
 
-		input := &Input{}
-		if err := utils.ReadJSON(req.Body, input); err != nil {
-			utils.ErrorResponse(w, http.StatusBadRequest, err)
-			return
+		publishedStatus := "published"
+		params := domain.PublishArticleParams{
+			Status: &publishedStatus,
+			Slug:   slug,
 		}
 
-		if err := utils.Validate.Struct(input); err != nil {
-			utils.ValidationError(w, err)
-			return
-		}
-
-		params := domain.UpdateArticleParams{
-			Title:       input.Title,
-			Body:        input.Body,
-			Description: input.Description,
-			Slug:        slug,
-		}
-
-		article, err := q.UpdateArticle(req.Context(), params)
+		article, err := q.PublishArticle(req.Context(), params)
 
 		if err != nil {
 			switch {
