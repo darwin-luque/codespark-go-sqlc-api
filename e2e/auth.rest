@@ -7,3 +7,12 @@ Content-Type: application/json
     "password": "Password123!",
     "username": "darwin"
 }
+
+### Sign in
+POST http://localhost:8080/api/auth/sign-in
+Content-Type: application/json
+
+{
+    "email": "darwin@codexitos.com",
+    "password": "Password123!"
+}
