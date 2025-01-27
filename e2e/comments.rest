@@ -1,0 +1,20 @@
+@url=http://localhost:8080/api
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRhcndpbkBjb2RleGl0b3MuY29tIiwiaWQiOiJkYzM2Y2Q1My04NTExLTQ1NzItOWIzMS03MTA0NDczOGFiZWQifQ.Jsu7UAyGP4ppV0FcE9G8t-_IviSLnD5-geABjIZnWWQ
+@articleSlug=my-first-article
+
+### Comment an article
+POST {{url}}/articles/{{articleSlug}}/comments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "body": "This is my first comment"
+}
+
+### List comments of an article
+GET {{url}}/articles/{{articleSlug}}/comments
+Authorization: Bearer {{token}}
+
+### Delete a comment
+DELETE {{url}}/comments/b3a1258c-90a5-45b8-a9f5-46baa24dacf0
+Authorization: Bearer {{token}}
