@@ -37,3 +37,10 @@ FROM
   "article"
 WHERE
   "slug" = $1;
+
+-- name: DeleteArticle :exec
+DELETE FROM
+  "article"
+WHERE
+  "slug" = $1;
+

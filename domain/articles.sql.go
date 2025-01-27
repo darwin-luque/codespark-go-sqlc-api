@@ -51,6 +51,18 @@ func (q *Queries) CreateArticle(ctx context.Context, arg CreateArticleParams) (A
 	return i, err
 }
 
+const deleteArticle = `-- name: DeleteArticle :exec
+DELETE FROM
+  "article"
+WHERE
+  "slug" = $1
+`
+
+func (q *Queries) DeleteArticle(ctx context.Context, slug string) error {
+	_, err := q.db.Exec(ctx, deleteArticle, slug)
+	return err
+}
+
 const getArticleBySlug = `-- name: GetArticleBySlug :one
 SELECT
   id, title, body, description, slug, author_id, status, created_at, updated_at
