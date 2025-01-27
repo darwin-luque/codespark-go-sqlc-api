@@ -14,19 +14,21 @@ import (
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/server/modules/articles"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/server/modules/auth"
 	"github.com/darwin-luque/codespark-go-sqlc-api/internal/server/modules/comments"
+	"github.com/darwin-luque/codespark-go-sqlc-api/internal/server/modules/favorites"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
 
 type Server struct {
-	server   *http.Server
-	router   *mux.Router
-	cfg      config.Interface
-	db       domain.DBTX
-	m        *middlewares.Middlewares
-	auth     *auth.AuthModule
-	articles *articles.ArticlesModule
-	comments *comments.CommentsModule
+	server    *http.Server
+	router    *mux.Router
+	cfg       config.Interface
+	db        domain.DBTX
+	m         *middlewares.Middlewares
+	auth      *auth.AuthModule
+	articles  *articles.ArticlesModule
+	comments  *comments.CommentsModule
+	favorites *favorites.FavoritesModule
 }
 
 func New(cfg config.Interface, db domain.DBTX) (*Server, error) {
@@ -55,6 +57,7 @@ func (s *Server) initModules() {
 	s.auth = auth.New(s.db, s.cfg, s.m)
 	s.articles = articles.New(s.db, s.cfg, s.m)
 	s.comments = comments.New(s.db, s.cfg, s.m)
+	s.favorites = favorites.New(s.db, s.cfg, s.m)
 }
 
 func (s *Server) Run() error {
@@ -77,6 +80,7 @@ func (s *Server) routes() {
 	s.auth.RegisterRoutes(apiRouter)
 	s.articles.RegisterRoutes(apiRouter)
 	s.comments.RegisterRoutes(apiRouter)
+	s.favorites.RegisterRoutes(apiRouter)
 }
 
 func healthCheck() http.Handler {
